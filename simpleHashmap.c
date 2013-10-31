@@ -29,7 +29,7 @@ static void* copy_content(void* content, size_t len)
 static map_entry* generate_map_entry(void* data, size_t data_len, char* key, size_t key_len)
 {
     map_entry* entry = (map_entry*)malloc(sizeof(map_entry));
-    entry->key = copy_content(key, key_len);
+    entry->key = copy_content(key, key_len+1);
     entry->data = copy_content(data, data_len);
     entry->next = NULL;   
     return entry;
