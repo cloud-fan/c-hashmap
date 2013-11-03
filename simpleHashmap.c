@@ -7,6 +7,7 @@ struct s_map_entry
 {
     void* data;
     char* key;
+    size_t key_len;
     struct s_map_entry* next;
 };
 
@@ -29,7 +30,8 @@ static void* copy_content(void* content, size_t len)
 static map_entry* generate_map_entry(void* data, size_t data_len, char* key, size_t key_len)
 {
     map_entry* entry = (map_entry*)malloc(sizeof(map_entry));
-    entry->key = copy_content(key, key_len+1);
+    entry->key = copy_content(key, key_len);
+    entry->key_len = key_len;
     entry->data = copy_content(data, data_len);
     entry->next = NULL;   
     return entry;
@@ -45,23 +47,24 @@ static void free_map_entry(map_entry* entry)
 //return 0: stop search because of key match
 static int search_map_entry_in_linked_list(map_entry** entry, char* key, size_t key_len, map_entry** previous)
 {
-    int key_match = memcmp((*entry)->key, key, key_len);
+    int key_match = (*entry)->key_len == key_len && memcmp((*entry)->key, key, key_len);
     while(key_match != 0 && (*entry)->next != NULL)
     {
         *previous = *entry;
         *entry = (*entry)->next;
-        key_match = memcmp((*entry)->key, key, key_len);
+        key_match = (*entry)->key_len == key_len && memcmp((*entry)->key, key, key_len);
     }
     return key_match;
 }
 
-static size_t string_hash(char* string)
+static size_t string_hash(char* string, size_t len)
 {
-    size_t hash;  
+    size_t hash = 0;  
     unsigned char *p;  
-  
-    for(hash = 0, p = (unsigned char *)string; *p ; p++)  
-        hash = 31 * hash + *p;  
+
+    int i;
+    for(i = 0, p = (unsigned char *)string; i<len ; i++)
+        hash = 31 * hash + *(p+i);
   
     return (hash & 0x7FFFFFFF);  
 }
@@ -104,7 +107,7 @@ void free_hashmap(hashmap* map)
     free(map);
 }
 
-void hashmap_insert(hashmap* map, void* data, size_t data_len, char* key, size_t key_len)
+void hashmap_insert(hashmap* map, char* key, size_t key_len, void* data, size_t data_len)
 {
     if(map->size <= map->count)
     {
@@ -113,7 +116,7 @@ void hashmap_insert(hashmap* map, void* data, size_t data_len, char* key, size_t
     }
 
     ++map->count;
-    int index = string_hash(key) % map->size;
+    int index = string_hash(key, key_len) % map->size;
     if(map->table[index] == NULL)
         map->table[index] = generate_map_entry(data, data_len, key, key_len);
     else
@@ -136,7 +139,7 @@ void hashmap_remove(hashmap* map, char* key, size_t key_len)
     if(map->count == 0)
         return;
 
-    int index = string_hash(key) % map->size;
+    int index = string_hash(key, key_len) % map->size;
     map_entry* entry = map->table[index];
     if(entry != NULL)
     {
@@ -159,7 +162,7 @@ void* hashmap_get(hashmap* map, char* key, size_t key_len)
     if(map->count == 0)
         return NULL;
 
-    map_entry* entry = map->table[string_hash(key) % map->size];
+    map_entry* entry = map->table[string_hash(key, key_len) % map->size];
     if(entry != NULL)
     {
         int key_match = search_map_entry_in_linked_list(&entry, key, key_len, NULL);

@@ -16,18 +16,18 @@ int main(int argc, char const *argv[])
     char key5[] = "aaa";
     char val5[] = "555";
 
-    hashmap_insert(map, (void*)val1, 4, key1, 4);
-    hashmap_insert(map, (void*)val2,4, key2,4);
-    hashmap_insert(map, (void*)val3,4, key3,4);
-    hashmap_insert(map, (void*)val4,4, key4,4);
-    hashmap_insert(map, (void*)val5,4, key5,4);
+    hashmap_insert(map, key1, 3, (void*)val1, 4);
+    hashmap_insert(map, key2, 3, (void*)val2, 4);
+    hashmap_insert(map, key3, 3, (void*)val3, 4);
+    hashmap_insert(map, key4, 3, (void*)val4, 4);
+    hashmap_insert(map, key5, 3, (void*)val5, 4);
 
     printf("%d\n", hashmap_count(map));
 
-    printf("%s\n", (char*)hashmap_get(map, "ddd",4));
-    printf("%s\n", (char*)hashmap_get(map, "ccc",4));
-    printf("%s\n", (char*)hashmap_get(map, "aaa",4));
-    printf("%s\n", (char*)hashmap_get(map, "bbb",4));
+    printf("%s\n", (char*)hashmap_get(map, "ddd",3));
+    printf("%s\n", (char*)hashmap_get(map, "ccc",3));
+    printf("%s\n", (char*)hashmap_get(map, "aaa",3));
+    printf("%s\n", (char*)hashmap_get(map, "bbb",3));
 
     free_hashmap(map);
 
