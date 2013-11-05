@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
 #include "simpleHashmap.h"
 
 struct s_map_entry
@@ -99,18 +98,22 @@ void free_hashmap(hashmap* map)
 
 int hashmap_insert(hashmap* map, char* key, size_t key_len, void* data, size_t data_len)
 {
+    return hashmap_insert_uint64_key(map, string_hash(key, key_len), data, data_len);
+}
+
+int hashmap_insert_uint64_key(hashmap* map, uint64_t key, void* data, size_t data_len)
+{
     if(map->size <= map->count)
         return -1;
 
     ++map->count;
-    uint64_t key_hash = string_hash(key, key_len);
-    size_t index = key_hash % map->size;
+    size_t index = key % map->size;
     if(map->table[index] == NULL)
-        map->table[index] = generate_map_entry(data, data_len, key_hash);
+        map->table[index] = generate_map_entry(data, data_len, key);
     else
     {
         map_entry* entry = map->table[index];
-        int key_match = search_map_entry_in_linked_list(&entry, key_hash, NULL);
+        int key_match = search_map_entry_in_linked_list(&entry, key, NULL);
         if(key_match)
         {
             free(entry->data);
@@ -118,24 +121,28 @@ int hashmap_insert(hashmap* map, char* key, size_t key_len, void* data, size_t d
             --map->count;
         }
         else
-            entry->next = generate_map_entry(data, data_len, key_hash);
+            entry->next = generate_map_entry(data, data_len, key);
     }
 
-    return 0;
+    return 0;    
 }
 
 int hashmap_remove(hashmap* map, char* key, size_t key_len)
 {
+    return hashmap_remove_uint64_key(map, string_hash(key, key_len));
+}
+
+int hashmap_remove_uint64_key(hashmap* map, uint64_t key)
+{
     if(map->count == 0)
         return -1;
 
-    uint64_t key_hash = string_hash(key, key_len);
-    size_t index = key_hash % map->size;
+    size_t index = key % map->size;
     map_entry* entry = map->table[index];
     if(entry != NULL)
     {
         map_entry* previous = NULL;
-        int key_match = search_map_entry_in_linked_list(&entry, key_hash, &previous);
+        int key_match = search_map_entry_in_linked_list(&entry, key, &previous);
         if(key_match)
         {
             --map->count;
@@ -148,23 +155,27 @@ int hashmap_remove(hashmap* map, char* key, size_t key_len)
         }
     }
 
-    return 0;
+    return 0;    
 }
 
 void* hashmap_get(hashmap* map, char* key, size_t key_len)
 {
+    return hashmap_get_uint64_key(map, string_hash(key, key_len));
+}
+
+void* hashmap_get_uint64_key(hashmap* map, uint64_t key)
+{
     if(map->count == 0)
         return NULL;
 
-    uint64_t key_hash = string_hash(key, key_len);
-    map_entry* entry = map->table[key_hash % map->size];
+    map_entry* entry = map->table[key % map->size];
     if(entry != NULL)
     {
-        int key_match = search_map_entry_in_linked_list(&entry, key_hash, NULL);
+        int key_match = search_map_entry_in_linked_list(&entry, key, NULL);
         if(key_match)
             return entry->data;
     }
-    return NULL;
+    return NULL;    
 }
 
 size_t hashmap_count(hashmap* map)
