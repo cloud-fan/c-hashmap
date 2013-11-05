@@ -15,12 +15,19 @@ int main(int argc, char const *argv[])
     char val4[] = "133";
     char key5[] = "aaa";
     char val5[] = "555";
+    char key6[] = "zzz";
+    char val6[] = "999";
 
     hashmap_insert(map, key1, 3, (void*)val1, 4);
     hashmap_insert(map, key2, 3, (void*)val2, 4);
     hashmap_insert(map, key3, 3, (void*)val3, 4);
     hashmap_insert(map, key4, 3, (void*)val4, 4);
     hashmap_insert(map, key5, 3, (void*)val5, 4);
+    hashmap_insert(map, key6, 3, (void*)val6, 4);
+
+    printf("%d\n", hashmap_count(map));
+
+    hashmap_remove(map, "zzz", 3);
 
     printf("%d\n", hashmap_count(map));
 

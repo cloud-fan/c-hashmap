@@ -10,9 +10,9 @@ hashmap* create_hashmap(size_t size);
 
 void free_hashmap(hashmap* map);
 
-void hashmap_insert(hashmap* map, char* key, size_t key_len, void* data, size_t data_len);
+int hashmap_insert(hashmap* map, char* key, size_t key_len, void* data, size_t data_len);
 
-void hashmap_remove(hashmap* map, char* key, size_t key_len);
+int hashmap_remove(hashmap* map, char* key, size_t key_len);
 
 void* hashmap_get(hashmap* map, char* key, size_t key_len);
 
