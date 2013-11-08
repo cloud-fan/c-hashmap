@@ -1,3 +1,8 @@
+/* This hash map doesn't keep the address of key and value when user call insert.
+   So after user call insert, they can free key and value if necessary.
+   When user call get, the data returned point to the real content in hash table.
+   So DO NOT FREE THE RETURNED DATA! */
+
 #ifndef _SIMPLE_HASHMAP_H_
 #define _SIMPLE_HASHMAP_H_
 
