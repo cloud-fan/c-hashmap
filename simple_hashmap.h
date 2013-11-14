@@ -9,8 +9,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-struct s_hashmap;
-typedef struct s_hashmap hashmap;
+struct _hashmap;
+typedef struct _hashmap hashmap;
 
 hashmap* create_hashmap(size_t size);
 

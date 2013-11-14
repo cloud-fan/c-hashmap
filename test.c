@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "simpleHashmap.h"
+#include "simple_hashmap.h"
 
 int main(int argc, char const *argv[])
 {

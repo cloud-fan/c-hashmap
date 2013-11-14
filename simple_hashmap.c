@@ -1,18 +1,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "simpleHashmap.h"
+#include "simple_hashmap.h"
 
-struct s_map_entry
+struct _map_entry
 {
     uint64_t key_hash;
     void* data;
-    struct s_map_entry* next;
+    struct _map_entry* next;
 };
 
-typedef struct s_map_entry map_entry;
+typedef struct _map_entry map_entry;
 
-struct s_hashmap
+struct _hashmap
 {
     map_entry** table;
     size_t size;
