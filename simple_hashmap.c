@@ -28,7 +28,7 @@ static void* copy_content(void* content, size_t len)
 
 static map_entry* generate_map_entry(void* data, size_t data_len, uint64_t key_hash)
 {
-    map_entry* entry = (map_entry*)malloc(sizeof(map_entry));
+    map_entry* entry = malloc(sizeof(map_entry));
     entry->key_hash = key_hash;
     entry->data = copy_content(data, data_len);
     entry->next = NULL;   
@@ -76,8 +76,8 @@ static uint64_t string_hash(char* string, size_t len)
 
 hashmap* create_hashmap(size_t size)
 {
-    hashmap* hm = (hashmap*)malloc(sizeof(hashmap));
-    hm->table = (map_entry**)calloc(sizeof(map_entry*), size);
+    hashmap* hm = malloc(sizeof(hashmap));
+    hm->table = calloc(sizeof(map_entry*), size);
     hm->size = size;
     hm->count = 0;
     return hm;
